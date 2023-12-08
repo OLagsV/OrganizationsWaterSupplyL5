@@ -1,0 +1,106 @@
+﻿@* @model IEnumerable<OrganizationsWaterSupplyL4.Models.CountersDatum>
+ *@
+@using OrganizationsWaterSupplyL4.ViewModels.CountersData
+@model CountersDataViewModel
+@{
+    ViewData["Title"] = "Показания счетчиков";
+}
+
+<h1>Показания счетчиков</h1>
+<form method="get">
+    <label>Дата сверки: </label>
+    <input type="date" name="dataCheckDate" asp-items="@Model.CountersDataFilterViewModel.SelectedDataCheckDate"/>
+    <label>Марка: </label>
+    <select name="registartionNumber" asp-items="@Model.CountersDataFilterViewModel.Counters"></select>
+
+    <label>Объем: </label>
+    <input name="volume" asp-items="@Model.CountersDataFilterViewModel.SelectedVolume"/>
+
+    <input type="submit" value="Фильтр" />
+</form>
+@if (User.IsInRole("admin"))
+{
+    <p>
+        <a asp-action="Create">Новая запись</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.CountersDataSortViewModel.DataCheckDateSort)"
+                   asp-route-dataCheckDate="@(Model.CountersDataFilterViewModel.SelectedDataCheckDate)"
+                   asp-route-volume="@(Model.CountersDataFilterViewModel.SelectedVolume)"
+                   asp-route-registrationNumber="@(Model.CountersDataFilterViewModel.SelectedCounterRegistrationNumber)">Дата сверки</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.CountersDataSortViewModel.VolumeSort)"
+                   asp-route-dataCheckDate="@(Model.CountersDataFilterViewModel.SelectedDataCheckDate)"
+                   asp-route-volume="@(Model.CountersDataFilterViewModel.SelectedVolume)"
+                   asp-route-registrationNumber="@(Model.CountersDataFilterViewModel.SelectedCounterRegistrationNumber)">Объем</a>
+            </th>
+            </th>
+            <th>
+                Регистрационный номер
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.CounterData) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataCheckDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Volume)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegistrationNumber.RegistrationNumber)
+            </td>
+                @if (User.IsInRole("admin"))
+                {
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CountersDataId">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.CountersDataId">Подробно</a> |
+                <a asp-action="Delete" asp-route-id="@item.CountersDataId">Удалить</a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.CountersDataId">Подробно</a>
+                    </td>
+                }
+        </tr>
+}
+    </tbody>
+</table>
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-dataCheckDate="@(Model.CountersDataFilterViewModel.SelectedDataCheckDate)"
+           asp-route-volume="@(Model.CountersDataFilterViewModel.SelectedVolume)"
+           asp-route-registrationNumber="@(Model.CountersDataFilterViewModel.SelectedCounterRegistrationNumber)"
+           asp-route-sortorder="@(Model.CountersDataSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-dataCheckDate="@(Model.CountersDataFilterViewModel.SelectedDataCheckDate)"
+           asp-route-volume="@(Model.CountersDataFilterViewModel.SelectedVolume)"
+           asp-route-registrationNumber="@(Model.CountersDataFilterViewModel.SelectedCounterRegistrationNumber)"
+           asp-route-sortorder="@(Model.CountersDataSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>

@@ -1,0 +1,131 @@
+﻿@* @model IEnumerable<OrganizationsWaterSupplyL4.Models.Organization> *@
+@using OrganizationsWaterSupplyL4.ViewModels.Organizations
+@model OrganizationsViewModel
+@{
+    ViewData["Title"] = "Организации";
+}
+
+<h1>Организации</h1>
+<form method="get">
+    <label>Имя: </label>
+    <input name="orgName" value="@Model.OrganizationsFilterViewModel.SelectedOrgName" />
+
+    <label>Тип собственности:</label>
+    <input name="ownershipType" asp-items="@Model.OrganizationsFilterViewModel.SelectedOwnType"></input>
+
+    <input type="submit" value="Фильтр" />
+</form>
+@if (User.IsInRole("admin"))
+{
+    <p>
+        <a asp-action="Create">Новая запись</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.OrganizationsSortViewModel.OrgNameSort)"
+                   asp-route-orgname="@(Model.OrganizationsFilterViewModel.SelectedOrgName)"
+                   asp-route-ownerType="@(Model.OrganizationsFilterViewModel.SelectedOwnType)">Организация</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.OrganizationsSortViewModel.OwnerTypeSort)"
+                   asp-route-orgname="@(Model.OrganizationsFilterViewModel.SelectedOrgName)"
+                   asp-route-ownerType="@(Model.OrganizationsFilterViewModel.SelectedOwnType)">Тип собственности</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.OrganizationsSortViewModel.AdressSort)"
+                   asp-route-orgname="@(Model.OrganizationsFilterViewModel.SelectedOrgName)"
+                   asp-route-ownerType="@(Model.OrganizationsFilterViewModel.SelectedOwnType)">Адресс</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.OrganizationsSortViewModel.DirectorSort)"
+                   asp-route-orgname="@(Model.OrganizationsFilterViewModel.SelectedOrgName)"
+                   asp-route-ownerType="@(Model.OrganizationsFilterViewModel.SelectedOwnType)">ФИО директора</a>
+            </th>
+            <th>
+                Телефон директора
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.OrganizationsSortViewModel.ResponsibleSort)"
+                   asp-route-orgname="@(Model.OrganizationsFilterViewModel.SelectedOrgName)"
+                   asp-route-ownerType="@(Model.OrganizationsFilterViewModel.SelectedOwnType)">ФИО представителя</a>
+            </th>
+            <th>
+                Телефон представителя
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Organizations) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrgName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnershipType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DirectorFullname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DirectorPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ResponsibleFullname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ResponsiblePhone)
+            </td>
+                @if (User.IsInRole("admin"))
+                {
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.OrganizationId">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.OrganizationId">Подробно</a> |
+                <a asp-action="Delete" asp-route-id="@item.OrganizationId">Удалить</a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.OrganizationId">Подробно</a>
+                    </td>
+                }
+        </tr>
+}
+    </tbody>
+</table>
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-orgname="@(Model.OrganizationsFilterViewModel.SelectedOrgName)"
+           asp-route-ownerType="@(Model.OrganizationsFilterViewModel.SelectedOwnType)"
+           asp-route-sortorder="@(Model.OrganizationsSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-orgname="@(Model.OrganizationsFilterViewModel.SelectedOrgName)"
+           asp-route-ownerType="@(Model.OrganizationsFilterViewModel.SelectedOwnType)"
+           asp-route-sortorder="@(Model.OrganizationsSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>

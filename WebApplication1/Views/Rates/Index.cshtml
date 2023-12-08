@@ -1,0 +1,91 @@
+﻿@* @model IEnumerable<OrganizationsWaterSupplyL4.Models.Rate> *@
+@using OrganizationsWaterSupplyL4.ViewModels.Rates
+@model RatesViewModel
+@{
+    ViewData["Title"] = "Тарифы";
+}
+
+<h1>Тарифы</h1>
+<form method="get">
+    <label>Тариф: </label>
+    <input name="rateName" value="@Model.RatesFilterViewModel.SelectedRateName" />
+
+    <label>Цена: </label>
+    <input name="price" asp-items="@Model.RatesFilterViewModel.SelectedPrice"/>
+
+    <input type="submit" value="Фильтр" />
+</form>
+@if (User.IsInRole("admin"))
+{
+    <p>
+        <a asp-action="Create">Новая запись</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.RatesSortViewModel.RateNameSort)"
+                   asp-route-rateName="@(Model.RatesFilterViewModel.SelectedRateName)"
+                   asp-route-price="@(Model.RatesFilterViewModel.SelectedPrice)">Тариф</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.RatesSortViewModel.PriceSort)"
+                   asp-route-rateName="@(Model.RatesFilterViewModel.SelectedRateName)"
+                   asp-route-price="@(Model.RatesFilterViewModel.SelectedPrice)">Стоимость</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Rates) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RateName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+                @if (User.IsInRole("admin"))
+                {
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RateId">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.RateId">Подробно</a> |
+                <a asp-action="Delete" asp-route-id="@item.RateId">Удалить</a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.RateId">Подробно</a>
+                    </td>
+                }
+        </tr>
+}
+    </tbody>
+</table>
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-rateName="@(Model.RatesFilterViewModel.SelectedRateName)"
+           asp-route-price="@(Model.RatesFilterViewModel.SelectedPrice)"
+           asp-route-sortorder="@(Model.RatesSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-rateName="@(Model.RatesFilterViewModel.SelectedRateName)"
+           asp-route-price="@(Model.RatesFilterViewModel.SelectedPrice)"
+           asp-route-sortorder="@(Model.RatesSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>

@@ -1,0 +1,42 @@
+﻿@model OrganizationsWaterSupplyL4.Models.CountersCheck
+
+@{
+    ViewData["Title"] = "Создание";
+}
+
+<h1>Создание</h1>
+
+<h4>Поверка счетчика</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CounterRegistrationNumber" class="control-label"></label>
+                <select asp-for="CounterRegistrationNumber" class ="form-control" asp-items="ViewBag.CounterRegistrationNumber"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="CheckDate" class="control-label"></label>
+                <input asp-for="CheckDate" class="form-control" />
+                <span asp-validation-for="CheckDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CheckResult" class="control-label"></label>
+                <input asp-for="CheckResult" class="form-control" />
+                <span asp-validation-for="CheckResult" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Создать" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Список</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,109 @@
+﻿@* @model IEnumerable<OrganizationsWaterSupplyL4.Models.CounterModel>
+ *@
+@using OrganizationsWaterSupplyL4.ViewModels.CountersModels
+@model CountersModelsViewModel
+@{
+    ViewData["Title"] = "Марки счетчиков";
+}
+
+<h1>Марки счетчиков</h1>
+<form method="get">
+    <label>Марка: </label>
+    <input name="modelName" value="@Model.CountersModelsFilterViewModel.SelectedModelName" />
+    <label>Производитель: </label>
+    <input name="manufacturer" asp-items="@Model.CountersModelsFilterViewModel.SelectedManufacturer"></input>
+    <label>Срок службы: </label>
+    <input name="manufacturer" asp-items="@Model.CountersModelsFilterViewModel.SelectedServiceTime"></input>
+
+    <input type="submit" value="Фильтр" />
+</form>
+@if(User.IsInRole("admin"))
+{
+<p>
+    <a asp-action="Create">Новая запись</a>
+</p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.CountersModelsSortViewModel.ModelNameSort)"
+                   asp-route-modelName="@(Model.CountersModelsFilterViewModel.SelectedModelName)"
+                   asp-route-manufacturer="@(Model.CountersModelsFilterViewModel.SelectedManufacturer)"
+                   asp-route-serviceTime="@(Model.CountersModelsFilterViewModel.SelectedServiceTime)">Модель</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.CountersModelsSortViewModel.ManufacturerSort)"
+                   asp-route-modelName="@(Model.CountersModelsFilterViewModel.SelectedModelName)"
+                   asp-route-manufacturer="@(Model.CountersModelsFilterViewModel.SelectedManufacturer)"
+                   asp-route-serviceTime="@(Model.CountersModelsFilterViewModel.SelectedServiceTime)">Производитель</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.CountersModelsSortViewModel.ServiceTimeSort)"
+                   asp-route-modelName="@(Model.CountersModelsFilterViewModel.SelectedModelName)"
+                   asp-route-manufacturer="@(Model.CountersModelsFilterViewModel.SelectedManufacturer)"
+                   asp-route-serviceTime="@(Model.CountersModelsFilterViewModel.SelectedServiceTime)">Срок службы</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.CounterModels) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModelName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Manufacturer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceTime)
+            </td>
+                @if (User.IsInRole("admin"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ModelId">Изменить</a> |
+                        <a asp-action="Details" asp-route-id="@item.ModelId">Подробно</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ModelId">Удалить</a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.ModelId">Подробно</a>
+                    </td>
+                }
+
+        </tr>
+}
+    </tbody>
+</table>
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-modelName="@(Model.CountersModelsFilterViewModel.SelectedModelName)"
+           asp-route-manufacturer="@(Model.CountersModelsFilterViewModel.SelectedManufacturer)"
+           asp-route-serviceTime="@(Model.CountersModelsFilterViewModel.SelectedServiceTime)"
+           asp-route-sortorder="@(Model.CountersModelsSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-modelName="@(Model.CountersModelsFilterViewModel.SelectedModelName)"
+           asp-route-manufacturer="@(Model.CountersModelsFilterViewModel.SelectedManufacturer)"
+           asp-route-serviceTime="@(Model.CountersModelsFilterViewModel.SelectedServiceTime)"
+           asp-route-sortorder="@(Model.CountersModelsSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>

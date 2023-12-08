@@ -1,0 +1,30 @@
+﻿@model OrganizationsWaterSupplyL4.Models.Rate
+
+@{
+    ViewData["Title"] = "Подробности";
+}
+
+<h1>Подробности</h1>
+
+<div>
+    <h4>Тариф</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RateName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RateName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.RateId">Изменить</a> |
+    <a asp-action="Index">Список</a>
+</div>

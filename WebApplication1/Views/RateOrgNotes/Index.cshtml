@@ -1,0 +1,93 @@
+﻿@* @model IEnumerable<OrganizationsWaterSupplyL4.Models.RateOrgNote>
+ *@
+@using OrganizationsWaterSupplyL4.ViewModels.RateOrgNotes
+@model RateOrgNotesViewModel
+@{
+    ViewData["Title"] = "Тарифы организаций";
+}
+
+<h1>Тарифы организаций</h1>
+<form method="get">
+    <label>Организация: </label>
+    <select name="organizationId" asp-items="@Model.RateOrgNotesFilterViewModel.Organizations"></select>
+    <label>Тариф: </label>
+    <select name="rateId" asp-items="@Model.RateOrgNotesFilterViewModel.Rates"></select>
+
+
+
+    <input type="submit" value="Фильтр" />
+</form>
+@if (User.IsInRole("admin"))
+{
+    <p>
+        <a asp-action="Create">Новая запись</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.RateOrgNotesSortViewModel.RateSort)"
+                   asp-route-modelId="@(Model.RateOrgNotesFilterViewModel.SelectedRate)"
+                   asp-route-organizationId="@(Model.RateOrgNotesFilterViewModel.SelectedOrganization)">Тариф</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.RateOrgNotesSortViewModel.OrganizationSort)"
+                   asp-route-modelId="@(Model.RateOrgNotesFilterViewModel.SelectedRate)"
+                   asp-route-organizationId="@(Model.RateOrgNotesFilterViewModel.SelectedOrganization)">Организация</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.RateOrgNotes) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Organization.OrgName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rate.RateName)
+            </td>
+                @if (User.IsInRole("admin"))
+                {
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RateOrgNoteId">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.RateOrgNoteId">Подробно</a> |
+                <a asp-action="Delete" asp-route-id="@item.RateOrgNoteId">Удалить</a>
+                    </td>
+                } else
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.RateOrgNoteId">Подробно</a>
+                    </td>
+                }
+        </tr>
+}
+    </tbody>
+</table>
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-orgname="@(Model.RateOrgNotesFilterViewModel.SelectedOrganization)"
+           asp-route-ownerType="@(Model.RateOrgNotesFilterViewModel.SelectedRate)"
+           asp-route-sortorder="@(Model.RateOrgNotesSortViewModel.Current)"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-orgname="@(Model.RateOrgNotesFilterViewModel.SelectedOrganization)"
+           asp-route-ownerType="@(Model.RateOrgNotesFilterViewModel.SelectedRate)"
+           asp-route-sortorder="@(Model.RateOrgNotesSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>

@@ -1,0 +1,109 @@
+﻿@* @model IEnumerable<OrganizationsWaterSupplyL4.Models.Counter> *@
+@using OrganizationsWaterSupplyL4.ViewModels.Counters
+@model CountersViewModel
+
+@{
+    ViewData["Title"] = "Счетчики";
+}
+
+<h1>Счетчики</h1>
+<form method="get">
+    <label>Дата установки: </label>
+    <input type="date" name="timeOfInstallation" asp-items="@Model.CountersFilterViewModel.SelectedTimeOfInstallation"></input>
+    <label>Марка: </label>
+    <select name="modelId" asp-items="@Model.CountersFilterViewModel.Models"></select>
+
+    <label>Организация: </label>
+    <select name="organizationId" asp-items="@Model.CountersFilterViewModel.Organizations"></select>
+
+    <input type="submit" value="Фильтр" />
+</form>
+@if (User.IsInRole("admin"))
+{
+    <p>
+        <a asp-action="Create">Новая запись</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.CountersSortViewModel.TimeOfInstallationSort)"
+                   asp-route-modelId="@(Model.CountersFilterViewModel.SelectedModel)"
+                   asp-route-timeOfInstallation="@(Model.CountersFilterViewModel.SelectedTimeOfInstallation)"
+                   asp-route-organizationId="@(Model.CountersFilterViewModel.SelectedOrganization)">Дата установки</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.CountersSortViewModel.ModelSort)"
+                   asp-route-modelId="@(Model.CountersFilterViewModel.SelectedModel)"
+                   asp-route-timeOfInstallation="@(Model.CountersFilterViewModel.SelectedTimeOfInstallation)"
+                   asp-route-organizationId="@(Model.CountersFilterViewModel.SelectedOrganization)">Марка</a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@(Model.CountersSortViewModel.OrganizationSort)"
+                   asp-route-modelId="@(Model.CountersFilterViewModel.SelectedModel)"
+                   asp-route-timeOfInstallation="@(Model.CountersFilterViewModel.SelectedTimeOfInstallation)"
+                   asp-route-organizationId="@(Model.CountersFilterViewModel.SelectedOrganization)">Организация</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Counters) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeOfInstallation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model.ModelName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Organization.OrgName)
+            </td>
+                @if (User.IsInRole("admin"))
+                {
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RegistrationNumber">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.RegistrationNumber">Подробно</a> |
+                <a asp-action="Delete" asp-route-id="@item.RegistrationNumber">Удалить</a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.RegistrationNumber">Подробно</a>
+                    </td>
+                }
+        </tr>
+}
+    </tbody>
+</table>
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-orgname="@(Model.CountersFilterViewModel.SelectedOrganization)"
+           asp-route-ownerType="@(Model.CountersFilterViewModel.SelectedModel)"
+           asp-route-timeOfInstallation="@(Model.CountersFilterViewModel.SelectedTimeOfInstallation)"
+           asp-route-sortorder="@(Model.CountersSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-right">
+           Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-orgname="@(Model.CountersFilterViewModel.SelectedOrganization)"
+           asp-route-ownerType="@(Model.CountersFilterViewModel.SelectedModel)"
+           asp-route-timeOfInstallation="@(Model.CountersFilterViewModel.SelectedTimeOfInstallation)"
+           asp-route-sortorder="@(Model.CountersSortViewModel.Current)"
+           class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>
